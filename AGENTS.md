@@ -99,8 +99,8 @@ to evaluate architectural consistency, naming, boundaries, and long-term maintai
 
 ### 6.6 Instruction Build
 - Purpose: transform `AI/task/seed.md` into `AI/task/instruction.md` as the sole implementation spec.
-- Inputs: `AI/task/seed.md`, `AI/task/templates/instruction.md`, assets in `AI/task/ui/*` if present.
-- Outputs: instruction only, formatted per `AI/task/templates/instruction.md`; no code.
+- Inputs: `AI/task/seed.md`, `AI/task/templates/instruction_template.md`, assets in `AI/task/ui/*` if present.
+- Outputs: instruction only, formatted per `AI/task/templates/instruction_template.md`; no code.
 - Must include:
   - requirement breakdown (in-scope / out-of-scope)
   - what to implement / what not to implement
@@ -120,7 +120,7 @@ to evaluate architectural consistency, naming, boundaries, and long-term maintai
 - Work items live in `AI/task/`.
 - `AI/task/seed.md` contains the feature summary.
 - To produce an instruction:
-  - fill `AI/task/templates/instruction.md` using the content of `AI/task/seed.md`;
+  - fill `AI/task/templates/instruction_template.md` using the content of `AI/task/seed.md`;
   - output as `AI/task/instruction.md`.
 - During implementation, follow `AI/task/instruction.md` and any assets in `AI/task/ui/*`.
 
