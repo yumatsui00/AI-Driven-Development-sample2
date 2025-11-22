@@ -4,7 +4,7 @@ AI Coding and Review Agent Guidelines
 ---
 
 ## 1. Purpose
-Act as the coding/review agent for this repository. Implement only the task requirements while following Repository Guidelines, and AI/task/. Prioritize precision, consistency, and safety.
+Act as the coding/review agent for this repository. Implement only the task requirements while following Repository Guidelines and AI/task/. Prioritize precision, consistency, and safety.
 
 ---
 
@@ -17,6 +17,12 @@ Act as the coding/review agent for this repository. Implement only the task requ
 ### Coding Philosophy
 - TypeScript strict must stay enabled. Enforce DRY/KISS/YAGNI, thin abstractions, and single responsibility per file. CRUD-style functions in `logic/` or `src/utils/` should aim for ≤40 lines and ≤80 chars per line (UI exempt). All functions require JSDoc (summary, params, returns, errors if non-Result). Comments in English, focus on “why.”
 - Naming: Components/types PascalCase; logic/utils camelCase; DB helpers snake_case; API routes `route.ts`; CSS kebab-case.
+
+### Reasoning & Depth
+- Prefer deep, deliberate reasoning over speed or brevity.
+- Before implementing non-trivial changes, derive a short mental plan: requirements, affected files, data flow, failure paths, and edge cases.
+- Always consider error paths, concurrency risks, and data consistency, even if they are not explicitly mentioned in the task.
+- When unsure, make assumptions explicit and ask to confirm rather than silently guessing.
 
 ### Data & CSV Rules
 - No remote DB; persist CSVs in `db/` (UTF-8, LF). First row is headers and includes `order`. IDs are UUIDv4 via `generateId()`. Do not quote CSV strings; nulls are empty strings.
@@ -48,31 +54,75 @@ Act as the coding/review agent for this repository. Implement only the task requ
   - If CLI/scripts explicitly say “summary only,” return only the summary.
   - Otherwise, include code in outputs as directed (full file, diff, etc.).
 - Review tasks: bullet issues only (no code or diffs).
-- Always honor Conventions and system/developer guidance.
-- Prefix every response with the current mode, e.g., `[MODE: Implement]`, `[MODE: Implementation Review]`, `[MODE: Test Review]`, `[MODE: Meta Review]`, `[MODE: Refactor]`.
+- Always honor system/developer guidance.
+- Prefix every response with the current mode, e.g., `[MODE: Implement]`, `[MODE: Implementation Review]`, `[MODE: Test Review]`, `[MODE: Meta Review]`, `[MODE: Refactor]`, `[MODE: Instruction Build]`.
 
 ---
 
 ## 6. Development Modes
 ### 6.1 Implement
-- Follow requirements exactly; no refactors beyond scope.
+- Purpose: deliver the scoped feature exactly as defined.
+- Inputs: `AI/task/instruction.md`, assets in `AI/task/ui/*`.
+- Outputs: required code changes only (no refactors outside scope).
+- Constraints: no behavior beyond the instruction; no refactors outside scope; ask when unclear; no new features. for non-trivial changes, think through a brief implementation plan before writing code.
+- Mode tag: `[MODE: Implement]`.
 
 ### 6.2 Implementation Review
-- Output issues only: spec alignment, security, TS strict, error handling, CSV/IO, logic consistency, recommended tests.
+- Purpose: surface implementation issues only.
+- Inputs: `.ai/diff.txt`, `.ai/review_prompt.txt`.
+- Outputs: bullet issues only (no code).
+- Checks: spec alignment, security, TS strict risks, error handling, CSV/IO consistency, logic consistency, recommended tests.
+- Mode tag: `[MODE: Implementation Review]`.
 
 ### 6.3 Test Review
-- Output issues only: coverage of normal/edge/error paths, fixtures, CSV round-trip, Result error branches.
+- Purpose: evaluate test coverage and fidelity.
+- Inputs: `.ai/diff.txt`, `.ai/review_prompt.txt`.
+- Outputs: bullet issues only (no code).
+- Checks: normal/abnormal/boundary coverage, fixture design, CSV write/read round-trip, `Result` error branches.
+- Mode tag: `[MODE: Test Review]`.
 
 ### 6.4 Meta Review
-- Output issues only: architecture, naming, boundaries, convention adherence; no feature proposals.
+- Purpose: assess architecture and adherence to rules.
+- Inputs: Meta Review may reference the entire repository when necessary
+(AGENTS.md, src/, logic/, app/, db/, components/, etc.)
+to evaluate architectural consistency, naming, boundaries, and long-term maintainability.
+- Outputs: bullet issues only (no code); no feature proposals.
+- Checks: architecture fitness, naming, UI/logic/IO boundaries, guideline compliance.
+- Mode tag: `[MODE: Meta Review]`.
 
 ### 6.5 Refactor
-- Refactor only within the specified scope. Do not change behavior or external contracts. Do not touch unspecified files/dirs. Rename minimally only when clearly necessary. No new features. Function splitting is allowed if responsibilities stay coherent. If adding a brief reason, comment in English explaining “why.”
+- Purpose: refactor within the specified scope only.
+- Inputs: `AI/task/instruction.md`, assets in `AI/task/ui/*`, latest review comments.
+- Outputs: refactor changes without altering behavior or external contracts.
+- Constraints: do not touch unspecified files/dirs; minimal renames with clear need; no new features; function splits only if responsibilities stay coherent; comment “why” in English if noting reasons.
+- Mode tag: `[MODE: Refactor]`.
+
+### 6.6 Instruction Build
+- Purpose: transform `AI/task/seed.md` into `AI/task/instruction.md` as the sole implementation spec.
+- Inputs: `AI/task/seed.md`, `AI/task/templates/instruction.md`, assets in `AI/task/ui/*` if present.
+- Outputs: instruction only, formatted per `AI/task/templates/instruction.md`; no code.
+- Must include:
+  - requirement breakdown (in-scope / out-of-scope)
+  - what to implement / what not to implement
+  - affected files / directories
+  - data structures & state
+  - processing flows
+  - UI specs (if any)
+  - business rules
+  - edge cases & constraints
+  - acceptance criteria
+- Constraints: no refactor/design changes; do not invent beyond the seed—ask if unclear.
+- Mode tag: `[MODE: Instruction Build]`.
 
 ---
 
 ## 7. Task Workflow (AI/task)
-- Work items live in `AI/task/`: `task/seed.md` holds the feature summary. If instructions are requested, fill `task/templates/instruction.md` to produce `task/instruction.md` from `seed.md`. During implementation, always consult `task/instruction.md` and assets in `task/ui/` (images, etc.).
+- Work items live in `AI/task/`.
+- `AI/task/seed.md` contains the feature summary.
+- To produce an instruction:
+  - fill `AI/task/templates/instruction.md` using the content of `AI/task/seed.md`;
+  - output as `AI/task/instruction.md`.
+- During implementation, follow `AI/task/instruction.md` and any assets in `AI/task/ui/*`.
 
 ---
 
@@ -94,11 +144,68 @@ Act as the coding/review agent for this repository. Implement only the task requ
 
 ---
 
-## 11. AI Review Rules (AI)
-- Run only after a PR exists and CI passes. Use `.ai/diff.txt` plus AGENTS.md, Conventions.md, AI/function.md as sole sources. Always state the review mode. Output bullet comments only; no code fixes.
-- Implementation Review: spec alignment, logic responsibility separation, TS strict risks, error handling, CSV/IO consistency, security risks, side effects/competition risks, line-count/line-length rules, UI→logic boundary. Comments only.
-- Test Review: coverage of normal/abnormal/boundary, CSV/IO write reproducibility, Result error branches, Mock-first adherence. Comments only.
-- Meta Review: alignment with Conventions/AGENTS/AI/function, design direction/fitness, responsibility separation, component boundaries, naming consistency, abstraction depth, DRY/KISS/YAGNI adherence, hidden debt, communicative structure, long-term maintainability. Timing as needed (ideally periodic). Output bullet issues with rationale only; no code. Forbidden: micro-tuning (renames/small tweaks), vague requests, baseless comments, excessive suggestions.
+### 11. AI Review Rules (AI)
+- Run reviews only after a PR exists and CI has passed.
+
+- Implementation Review / Test Review:
+    - Use only the following as sources:
+        - `.ai/diff.txt`
+        - `.ai/review_prompt.txt`
+    - Do not inspect the rest of the repository directly.
+
+- Meta Review:
+    - Exception: Meta Review may examine the entire repository
+      (Conventions.md, AGENTS.md, src/, logic/, app/, db/, components/, etc.)
+      to assess architectural consistency, naming, boundaries, and long-term design fitness.
+
+- Always state the active review mode.
+- Output bullet-point issues only; do not provide code fixes.
+
+### 11.1 Implementation Review
+- Inputs: `.ai/diff.txt`, `.ai/review_prompt.txt`.
+- Focus areas:
+  - Alignment with the intended specification.
+  - Separation of responsibilities in logic.
+  - Risks under TS strict mode.
+  - Error handling behavior and failure paths.
+  - CSV/IO consistency and safety.
+  - Security risks.
+  - Side effects/concurrency risks (e.g., shared mutable state, race conditions).
+  - Compliance with line-count and line-length guidelines.
+  - Proper UI → logic boundary.
+- Output: bullet issues with concise rationale; no code.
+
+### 11.2 Test Review
+- Inputs: `.ai/diff.txt`, `.ai/review_prompt.txt`.
+- Focus areas:
+  - Coverage of normal, abnormal, and boundary conditions.
+  - CSV/IO write-read reproducibility.
+  - Coverage of `Result` error branches.
+  - Adherence to a mock-first or isolation-friendly testing approach when applicable.
+- Output: bullet issues with concise rationale; no code.
+
+### 11.3 Meta Review
+- Inputs: Meta Review may reference the entire repository when necessary
+(AGENTS.md, src/, logic/, app/, db/, components/, etc.)
+to evaluate architectural consistency, naming, boundaries, and long-term maintainability.
+- Focus areas:
+  - Alignment with the documented guidelines and task instructions.
+  - Design direction and overall fitness.
+  - Separation of responsibilities.
+  - Component and module boundaries.
+  - Naming consistency.
+  - Abstraction depth (no over- or under-abstraction).
+  - DRY/KISS/YAGNI adherence.
+  - Hidden technical debt.
+  - Clarity of structure and long-term maintainability.
+- Timing: as needed, ideally on a periodic basis.
+- Output: bullet issues with rationale only; no code.
+- Forbidden in Meta Review:
+  - Micro-tuning (tiny renames or trivial tweaks).
+  - Vague or non-actionable comments.
+  - Comments without clear, grounded rationale.
+  - Excessive or speculative suggestions.
+  - Proposing architectural changes unless explicitly requested.
 
 ---
 
