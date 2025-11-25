@@ -1,26 +1,25 @@
 # Feature Seed
 
 ## 1. Summary (必須・短く)
-サインイン、ログイン機能。ロジックのみ
+プロジェクトを開始する。
 ---
 
 ## 2. Purpose / 背景
-ユーザー管理
+next.jsでの開発を開始するために、コマンドを実行し、最初のページを作成する。デザインは適当で構わない。
 
 ---
 
 ## 3. Requirements (箇条書きでOK)
-・サインイン、ログインにはemail, password(ハッシュ不要)
-・ログイン状態ではlocalStrageでlogin=Trueが記録される
+AGENTS.mdを参照する
 
 
 ---
 
 ## 4. Scope
 ### In Scope
-さいんいん、ログインのロジック
+
 ### Out of Scope
-UI等の作成
+
 ---
 
 ## 5. UI Notes (あれば)
@@ -29,7 +28,6 @@ UI等の作成
 ---
 
 ## 6. Edge Cases / Constraints
-nullの入力、空文字の入力など
 
 
 
