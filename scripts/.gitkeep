@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+set -e
+
+echo "=== AI Code Review (Local Diff Mode) ==="
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+AI_DIR="$ROOT_DIR/.ai"
+
+mkdir -p "$AI_DIR"
+
+DIFF_FILE="$AI_DIR/diff.txt"
+PROMPT_FILE="$AI_DIR/review_prompt.txt"
+
+echo "Generating local diff against HEAD (staged + unstaged)..."
+git diff HEAD > "$DIFF_FILE"
+
+if [ ! -s "$DIFF_FILE" ]; then
+  echo "❗ No changes detected. Diff is empty."
+  echo "Make sure you have uncommitted changes or staged commits."
+  exit 1
+fi
+
+echo "Local diff saved to $DIFF_FILE"
+
+# --- Required files ---
+INSTRUCTION_MD="$ROOT_DIR/AI/task/Instruction.md"
+AGENTS_MD="$ROOT_DIR/AGENTS.md"
+
+# --- Validate existence ---
+if [ ! -f "$INSTRUCTION_MD" ]; then
+  echo "❗ Missing Instruction.md at AI/task/Instruction.md"
+  exit 1
+fi
+
+if [ ! -f "$AGENTS_MD" ]; then
+  echo "❗ Missing AGENTS.md at ./AGENTS.md"
+  exit 1
+fi
+
+echo "Building review prompt..."
+
+cat <<EOF > "$PROMPT_FILE"
+# AI Code Review Request
+
+Review the following code diff using all repository rules.
+
+Follow the constraints defined in:
+
+1. **Instruction.md** (feature specification)
+2. **AGENTS.md** (repository-wide rules)
+
+---
+
+## 🔥 Instruction.md (Full Specification)
+$(cat "$INSTRUCTION_MD")
+
+---
+
+## 🧠 AGENTS.md (Repository Rules)
+$(cat "$AGENTS_MD")
+
+---
+
+## 📝 Local Git Diff
+$(cat "$DIFF_FILE")
+
+EOF
+
+echo "Review prompt generated at $PROMPT_FILE"
+echo "=== Ready to copy and send to Codex ==="

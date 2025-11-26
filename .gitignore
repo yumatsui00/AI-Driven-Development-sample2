@@ -9,3 +9,10 @@ dist
 .env.production.local
 coverage
 AI/instruction.md
+
+
+# .ai ディレクトリは基本すべて無視
+.ai/*
+
+# ただし .gitkeep だけは Git に含める
+!.ai/.gitkeep
