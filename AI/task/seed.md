@@ -1,29 +1,31 @@
 # Feature Seed
 
 ## 1. Summary (必須・短く)
-プロジェクトを開始する。
+プロジェクトのルートページの改修
 ---
 
 ## 2. Purpose / 背景
-next.jsでの開発を開始するために、コマンドを実行し、最初のページを作成する。デザインは適当で構わない。
-
+ルートページのデザインを変更する。
 ---
 
 ## 3. Requirements (箇条書きでOK)
-AGENTS.mdを参照する
+・ログイン、サインアップボタンが右上にあり、このプロジェクトの概要を説明する
+・ログイン機能、サインアップ機能を実装する必要はない。デザインだけ
+・イメージとして https://www.notion.com/ja/templates/category/website-building このページをベースとする
 
 
 ---
 
 ## 4. Scope
 ### In Scope
-
+デザイン
 ### Out of Scope
-
+・実際のログイン機能、サインアップ機能
 ---
 
 ## 5. UI Notes (あれば)
-
+https://www.notion.com/ja/templates/category/website-building
+を参照にする
 
 ---
 

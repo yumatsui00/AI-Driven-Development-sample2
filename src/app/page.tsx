@@ -10,9 +10,13 @@ export default function Home() {
 
   return (
     <HomePage
-      title={translate("home.landing.title")}
-      subtitle={translate("home.landing.subtitle")}
-      ctaLabel={translate("home.landing.cta")}
+      title={translate("home.hero.title")}
+      subtitle={translate("home.hero.subtitle")}
+      overviewTitle={translate("home.hero.overviewTitle")}
+      overviewBody={translate("home.hero.overviewBody")}
+      ctaLabel={translate("home.hero.cta")}
+      loginLabel={translate("home.nav.login")}
+      signupLabel={translate("home.nav.signup")}
     />
   );
 }

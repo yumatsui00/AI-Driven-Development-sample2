@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  background: radial-gradient(circle at 15% 20%, #1f2937, #0b1120 35%, #050816 70%);
-  color: #e5e7eb;
+  background: #f8fafc;
+  color: #0f172a;
   font-family: "Space Grotesk", "Inter", system-ui, -apple-system, sans-serif;
 }
 
