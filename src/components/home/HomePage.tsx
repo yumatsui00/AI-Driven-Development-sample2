@@ -5,6 +5,8 @@ export interface HomePageProps {
 }
 
 /**
+ * 
+ * 
  * Renders the landing view with translated copy and optional call-to-action.
  * @param props Copy strings sourced from translations.
  * @returns Structured landing content.
