@@ -45,6 +45,25 @@ export const translationsEn: Translations = {
     "landing.card.title.notionLanding": "Landing page website – Notive theme",
     "landing.card.title.productTemplate": "Product Launch Template",
     "landing.card.title.minimalTemplate": "Minimal Landing Template",
-    "landing.card.alt.generic": "テンプレートのプレビュー画像"
+    "landing.card.alt.generic": "テンプレートのプレビュー画像",
+
+    "home.protected.badge": "Logged in",
+    "home.protected.title": "Welcome to your home",
+    "home.protected.description":
+      "You are signed in. This page is reserved for authenticated visitors.",
+    "home.protected.signOut": "Sign out",
+    "auth.login.badge": "Login",
+    "auth.login.title": "Access your account",
+    "auth.login.submit": "Log in",
+    "auth.login.error": "Failed to log in. Please try again.",
+    "auth.signup.badge": "Sign up",
+    "auth.signup.title": "Create your account",
+    "auth.signup.submit": "Sign up",
+    "auth.signup.error": "Failed to sign up. Please try again.",
+    "auth.form.email": "Email",
+    "auth.form.password": "Password",
+    "auth.form.name": "Username",
+    "auth.form.cancel": "Cancel",
+    "auth.form.close": "Close"
   }
 };

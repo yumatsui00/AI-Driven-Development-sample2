@@ -33,7 +33,15 @@ export async function POST(
         { status: toStatus(result.error) }
       );
     }
-    return NextResponse.json(result.data, { status: 201 });
+    const response = NextResponse.json(result.data, { status: 201 });
+    response.cookies.set({
+      name: "login",
+      value: "true",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+      httpOnly: false
+    });
+    return response;
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });

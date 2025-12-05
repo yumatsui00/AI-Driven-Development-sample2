@@ -11,5 +11,13 @@ export async function POST(): Promise<NextResponse> {
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 500 });
   }
-  return NextResponse.json({ success: true }, { status: 200 });
+  const response = NextResponse.json({ success: true }, { status: 200 });
+  response.cookies.set({
+    name: "login",
+    value: "",
+    path: "/",
+    maxAge: 0,
+    httpOnly: false
+  });
+  return response;
 }
